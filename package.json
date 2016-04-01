@@ -22,9 +22,6 @@
     "url": "https://github.com/szikszail/require-it/issues"
   },
   "homepage": "https://github.com/szikszail/require-it#readme",
-  "dependencies": {
-    "require-nested": "^0.1.0"
-  },
   "devDependencies": {
     "copy-dir": "0.0.8",
     "jasmine-node": "^1.14.5"
