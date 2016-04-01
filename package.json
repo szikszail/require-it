@@ -1,0 +1,32 @@
+{
+  "name": "require-it",
+  "version": "0.0.1",
+  "description": "This module extends the default nodejs require with capabilities to require nested modules, independent on where they are nested.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./node_modules/jasmine-node/bin/jasmine-node ./test --verbose --color"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szikszail/require-it.git"
+  },
+  "keywords": [
+    "require",
+    "nested",
+    "module",
+    "node_modules"
+  ],
+  "author": "Laszlo Szikszai <sziklaszlo@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/szikszail/require-it/issues"
+  },
+  "homepage": "https://github.com/szikszail/require-it#readme",
+  "dependencies": {
+    "require-nested": "^0.1.0"
+  },
+  "devDependencies": {
+    "copy-dir": "0.0.8",
+    "jasmine-node": "^1.14.5"
+  }
+}
