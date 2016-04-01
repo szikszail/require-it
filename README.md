@@ -1,5 +1,7 @@
 # require-it
 
+[![Build Status](https://travis-ci.org/szikszail/require-it.svg?branch=master)](https://travis-ci.org/szikszail/require-it) [![dependency Status](https://david-dm.org/szikszail/require-it.svg)](https://david-dm.org/szikszail/require-it) [![devDependency Status](https://david-dm.org/szikszail/require-it/dev-status.svg)](https://david-dm.org/szikszail/require-it#info=devDependencies)
+
 This module extends the default nodejs require with capabilities to require nested modules, independent on where they are nested.
 
 **This module is for npm < 3.0, because new npm versions flatten the dependency tree and the problem is solved :)**
