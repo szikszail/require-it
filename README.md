@@ -23,6 +23,8 @@ This module extends the default nodejs require with capabilities to require nest
 
 `myPackage/index.js`:
 
-    var requireIt = require('require-it');
-    // it will work and won't throw error
-    var nestedModule = requireIt('nested-module');
+```javascript
+var requireIt = require('require-it');
+// it will work and won't throw error
+var nestedModule = requireIt('nested-module');
+```
