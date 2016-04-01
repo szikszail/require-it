@@ -15,7 +15,7 @@ var RequireIt = function () {
 
         function checkNodeModulesOfFolder(folder) {
             var root = path.join(folder, 'node_modules');
-            var nodeModules = getNodeModulesOfFolder(root);
+            var nodeModules = utils.getNodeModulesOfFolder(root);
             var i = 0;
             for (; !pathToModule && i < nodeModules.length; i += 1) {
                 if (nodeModules[i] === module) {
@@ -23,16 +23,6 @@ var RequireIt = function () {
                 } else {
                     checkNodeModulesOfFolder(path.join(root, nodeModules[i]));
                 }
-            }
-        }
-
-        function getNodeModulesOfFolder(folder) {
-            try {
-                return fs.readdirSync(folder).filter(function (file) {
-                    return utils.isNodeModule(path.join(folder, file));
-                });
-            } catch (e) {
-                return [];
             }
         }
 
