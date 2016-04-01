@@ -18,10 +18,12 @@ var RequireIt = function () {
             var nodeModules = utils.getNodeModulesOfFolder(root);
             var i = 0;
             for (; !pathToModule && i < nodeModules.length; i += 1) {
-                if (nodeModules[i] === module) {
-                    pathToModule = path.join(root, module);
+                if (utils.getFolder(nodeModules[i]) === module) {
+                    pathToModule = path.join(root, nodeModules[i]);
                 } else {
-                    checkNodeModulesOfFolder(path.join(root, nodeModules[i]));
+                    utils.getNodeModulesOfFolder(path.join(root, nodeModules[i], 'node_modules')).forEach(function (subModule) {
+                        nodeModules.push(path.join(nodeModules[i], 'node_modules', subModule));
+                    });
                 }
             }
         }

@@ -29,6 +29,9 @@ var self = {
         } catch (e) {
             return [];
         }
+    },
+    getFolder: function getFolder(folder) {
+        return folder.split(/[\/\\]/).pop();
     }
 };
 module.exports = self;
