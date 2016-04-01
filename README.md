@@ -1,5 +1,8 @@
 # require-it
+
 This module extends the default nodejs require with capabilities to require nested modules, independent on where they are nested.
+
+**This module is for npm < 3.0, because new npm versions flatten the dependency tree and the problem is solved :)**
 
 ## Install
 
