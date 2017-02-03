@@ -33,3 +33,17 @@ var requireIt = require('require-it');
 // it will work and won't throw error
 var nestedModule = requireIt('nested-module');
 ```
+
+## API
+
+### `requireIt(moduleName)`
+
+Requires the given module, indenpendent on which level is it.
+
+### `requireIt.resolve(moduleName)`
+
+Returns the path which could be required by `require`.
+
+### `requireIt.directory(moduleName)`
+
+Returns the path wich could be required by `require` without the main JS file, ie. the path to the module's directory.

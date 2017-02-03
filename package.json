@@ -18,6 +18,9 @@
   ],
   "author": "Laszlo Szikszai <sziklaszlo@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": ">=4.7.0 <7.0.0"
+  },
   "bugs": {
     "url": "https://github.com/szikszail/require-it/issues"
   },

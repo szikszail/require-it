@@ -1,42 +1,44 @@
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
+const path = require('path');
+const fs = require('fs');
 
-var utils = require('./utils');
+const utils = require('./utils');
 
-var RequireIt = function () {
-    var requireIt = function (module) {
-        return require(requireIt.resolve(module));
-    };
-
-    requireIt.resolve = function (module) {
-        var pathToModule;
-
-        function checkNodeModulesOfFolder(folder) {
-            var root = path.join(folder, 'node_modules');
-            var nodeModules = utils.getNodeModulesOfFolder(root);
-            var i = 0;
-            for (; !pathToModule && i < nodeModules.length; i += 1) {
-                if (utils.getFolder(nodeModules[i]) === module) {
-                    pathToModule = path.join(root, nodeModules[i]);
-                } else {
-                    utils.getNodeModulesOfFolder(path.join(root, nodeModules[i], 'node_modules')).forEach(function (subModule) {
-                        nodeModules.push(path.join(nodeModules[i], 'node_modules', subModule));
-                    });
-                }
-            }
-        }
-
-        try {
-            pathToModule = require.resolve(module);
-        } catch (e) {
-            checkNodeModulesOfFolder(process.cwd());
-        }
-        return pathToModule;
-    };
-
-    return requireIt;
+const requireIt = function (module) {
+    return require(requireIt.resolve(module));
 };
 
-module.exports = RequireIt();
+requireIt.resolve = module => {
+    let pathToModule;
+
+    const checkNodeModulesOfFolder = folder => {
+        const root = path.join(folder, 'node_modules');
+        const nodeModules = utils.getNodeModulesOfFolder(root);
+        for (let i = 0; !pathToModule && i < nodeModules.length; i += 1) {
+            if (utils.getFolder(nodeModules[i]) === module) {
+                pathToModule = path.join(root, nodeModules[i]);
+            } else {
+                utils.getNodeModulesOfFolder(path.join(root, nodeModules[i], 'node_modules')).forEach(subModule => {
+                    nodeModules.push(path.join(nodeModules[i], 'node_modules', subModule));
+                });
+            }
+        }
+    }
+
+    try {
+        pathToModule = require.resolve(module);
+    } catch (e) {
+        checkNodeModulesOfFolder(process.cwd());
+    }
+    return pathToModule;
+};
+
+requireIt.directory = module => {
+    let pathToModule = requireIt.resolve(module);
+    const fileRegExp = /^(.*)([\\\/][^\\\/]+.js)$/i;
+    const match = pathToModule.match(fileRegExp);
+    return match ? match[1] : pathToModule;
+};
+
+module.exports = requireIt;
