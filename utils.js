@@ -1,36 +1,38 @@
-var fs = require('fs');
-var path = require('path');
+'use strict';
 
-var self = {
-    isFile: function isFile(file) {
+const fs = require('fs');
+const path = require('path');
+
+const self = {
+    isFile(file) {
         try {
             return fs.statSync(file).isFile();
         } catch (e) {
             return false;
         }
     },
-    isFolder: function isFolder(folder) {
+    isFolder(folder) {
         try {
             return fs.statSync(folder).isDirectory();
         } catch (e) {
             return false;
         }
     },
-    isNodeModule: function isNodeModule(folder) {
-        return self.isFolder(folder)
-            && [self.isFolder(path.join(folder, 'node_modules'))
-            || self.isFile(path.join(folder, 'package.json'))];
+    isNodeModule(folder) {
+        return this.isFolder(folder)
+            && [this.isFolder(path.join(folder, 'node_modules'))
+            || this.isFile(path.join(folder, 'package.json'))];
     },
-    getNodeModulesOfFolder: function getNodeModulesOfFolder(folder) {
+    getNodeModulesOfFolder(folder) {
         try {
-            return fs.readdirSync(folder).filter(function (file) {
-                return self.isNodeModule(path.join(folder, file));
+            return fs.readdirSync(folder).filter(file => {
+                return this.isNodeModule(path.join(folder, file));
             });
         } catch (e) {
             return [];
         }
     },
-    getFolder: function getFolder(folder) {
+    getFolder(folder) {
         return folder.split(/[\/\\]/).pop();
     }
 };

@@ -58,6 +58,25 @@ describe("require-it", function () {
         );
     });
 
+    it("should determine module directory", function (done) {
+        child_process.execFile(
+            'node',
+            [path.join(process.cwd(), 'test/test-module/require-directory.js')],
+            {cwd: path.join(process.cwd(), 'test/test-module')},
+            function (error, stdout, stderr) {
+                if (error) {
+                    return done(error);
+                }
+                if (stderr) {
+                    return done(stderr);
+                }
+                console.log(stdout);
+                expect(stdout).toMatch(/a$/m);
+                done();
+            }
+        );
+    });
+
     it("should throw error if called with non-existing dependencies", function (done) {
         child_process.execFile(
             'node',
