@@ -70,7 +70,6 @@ describe("require-it", function () {
                 if (stderr) {
                     return done(stderr);
                 }
-                console.log(stdout);
                 expect(stdout).toMatch(/a$/m);
                 done();
             }

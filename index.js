@@ -36,9 +36,7 @@ requireIt.resolve = module => {
 
 requireIt.directory = module => {
     let pathToModule = requireIt.resolve(module);
-    const fileRegExp = /^(.*)([\\\/][^\\\/]+.js)$/i;
-    const match = pathToModule.match(fileRegExp);
-    return match ? match[1] : pathToModule;
+    return path.join(pathToModule.split(module).slice(0, -1).join(module), module);
 };
 
 module.exports = requireIt;
