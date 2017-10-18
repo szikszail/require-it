@@ -36,6 +36,9 @@ requireIt.resolve = module => {
 
 requireIt.directory = module => {
     let pathToModule = requireIt.resolve(module);
+    if (!pathToModule) {
+        throw Error(`Cannot find module: '${module}'`);
+    }
     return path.join(pathToModule.split(module).slice(0, -1).join(module), module);
 };
 
