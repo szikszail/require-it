@@ -1,6 +1,6 @@
 {
   "name": "require-it",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "This module extends the default nodejs require with capabilities to require nested modules, independent on where they are nested.",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "author": "Laszlo Szikszai <sziklaszlo@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=4.7.0 <7.0.0"
+    "node": ">=4.7.0"
   },
   "bugs": {
     "url": "https://github.com/szikszail/require-it/issues"
