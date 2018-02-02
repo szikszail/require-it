@@ -71,6 +71,7 @@ describe("require-it", function () {
                 if (stderr) {
                     return done(stderr);
                 }
+                expect(stdout).toContain(process.cwd());
                 expect(stdout).toMatch(/a$/m);
                 done();
             }
@@ -101,8 +102,8 @@ describe("require-it", function () {
                 if (stderr) {
                     return done(stderr);
                 }
-                expect(stdout).toContain('@scope');
-                expect(stdout).toContain('b');
+                expect(stdout).toContain(process.cwd());
+                expect(stdout).toContain('@scope' + path.sep + 'b');
                 done();
             }
         );
