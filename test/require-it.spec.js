@@ -52,6 +52,7 @@ describe("require-it", function () {
                 if (stderr) {
                     return done(stderr);
                 }
+                expect(stdout).not.toContain('@scope');
                 expect(stdout).toContain('b');
                 done();
             }
@@ -83,6 +84,25 @@ describe("require-it", function () {
             {cwd: path.join(process.cwd(), 'test/test-module')},
             function (error, stdout, stderr) {
                 expect(stderr).toBeDefined();
+                done();
+            }
+        );
+    });
+
+    it("should work with scoped packages too", function (done) {
+        child_process.execFile(
+            'node',
+            [path.join(process.cwd(), 'test/test-module/require-scoped.js')],
+            {cwd: path.join(process.cwd(), 'test/test-module')},
+            function (error, stdout, stderr) {
+                if (error) {
+                    return done(error);
+                }
+                if (stderr) {
+                    return done(stderr);
+                }
+                expect(stdout).toContain('@scope');
+                expect(stdout).toContain('b');
                 done();
             }
         );

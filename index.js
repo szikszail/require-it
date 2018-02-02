@@ -12,7 +12,7 @@ const requireIt = function (module) {
 requireIt.resolve = module => {
     let pathToModule;
 
-    const checkNodeModulesOfFolder = folder => {
+    const checkNodeModulesOfFolder = (folder, module) => {
         const root = path.join(folder, 'node_modules');
         const nodeModules = utils.getNodeModulesOfFolder(root);
         for (let i = 0; !pathToModule && i < nodeModules.length; i += 1) {
@@ -29,7 +29,13 @@ requireIt.resolve = module => {
     try {
         pathToModule = require.resolve(module);
     } catch (e) {
-        checkNodeModulesOfFolder(process.cwd());
+        let names = module.match(/^(@[^/]+)\/(.+)$/);
+        if (names) {
+            checkNodeModulesOfFolder(process.cwd(), names[1]);
+            checkNodeModulesOfFolder(pathToModule, names[2]);
+        } else {
+            checkNodeModulesOfFolder(process.cwd(), module);
+        }
     }
     return pathToModule;
 };
