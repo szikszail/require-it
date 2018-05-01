@@ -15,7 +15,7 @@ requireIt.resolve = module => {
     const checkScopedNodeModulesOfFolder = (folder, module) => {
         const directModules = utils.getNodeModulesOfFolder(folder);
         for (let i = 0; i < directModules.length; ++i) {
-            if (utils.getFolder(directModules[i]) ===  module) {
+            if (utils.getFolder(directModules[i]) === module) {
                 pathToModule = path.join(folder, directModules[i]);
                 break;
             }
@@ -54,7 +54,13 @@ requireIt.directory = module => {
     if (!pathToModule) {
         throw Error(`Cannot find module: '${module}'`);
     }
-    return path.join(pathToModule.split(module.replace('/', path.sep)).slice(0, -1).join(module), module);
+    return path.join(
+        pathToModule.split(module.replace('/', path.sep))
+            .filter(p => !/^[/\\]$/.test(p))
+            .slice(0, -1)
+            .join(module),
+        module
+    );
 };
 
 module.exports = requireIt;

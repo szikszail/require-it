@@ -1,6 +1,8 @@
 var child_process = require('child_process');
 var path = require('path');
 var copyDir = require('copy-dir');
+var sinon = require('sinon');
+var requireIt = require('../index');
 
 describe("require-it", function () {
     var requireIt;
@@ -107,5 +109,10 @@ describe("require-it", function () {
                 done();
             }
         );
+    });
+
+    it('should work in that case when main file is the same as package name', () => {
+        sinon.stub(requireIt, 'resolve').returns('<path-to-module>/node_modules/normalize.css/normalize.css');
+        expect(requireIt.directory('normalize.css').replace(/\\/g, '/')).toEqual('<path-to-module>/node_modules/normalize.css');
     });
 });
