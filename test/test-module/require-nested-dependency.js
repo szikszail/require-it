@@ -1,4 +1,4 @@
 var requireIt = require('../../index');
-var b = requireIt('b');
+var b = requireIt('bar-pkg');
 
 console.log(b.name);

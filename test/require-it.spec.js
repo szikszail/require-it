@@ -8,8 +8,8 @@ describe("require-it", function () {
     var requireIt;
     
     copyDir.sync(
-        path.join(process.cwd(), 'test/test-module/node_modules/a'),
-        path.join(process.cwd(), 'node_modules/a')
+        path.join(process.cwd(), 'test/test-module/node_modules/foo-pkg'),
+        path.join(process.cwd(), 'node_modules/foo-pkg')
     );
 
     beforeEach(function () {
@@ -36,7 +36,7 @@ describe("require-it", function () {
                 if (stderr) {
                     return done(stderr);
                 }
-                expect(stdout).toContain('a');
+                expect(stdout).toContain('foo-pkg');
                 done();
             }
         );
@@ -55,7 +55,7 @@ describe("require-it", function () {
                     return done(stderr);
                 }
                 expect(stdout).not.toContain('@scope');
-                expect(stdout).toContain('b');
+                expect(stdout).toContain('bar-pkg');
                 done();
             }
         );
@@ -74,7 +74,7 @@ describe("require-it", function () {
                     return done(stderr);
                 }
                 expect(stdout).toContain(process.cwd());
-                expect(stdout).toMatch(/a$/m);
+                expect(stdout).toMatch(/foo-pkg$/m);
                 done();
             }
         );
@@ -105,7 +105,7 @@ describe("require-it", function () {
                     return done(stderr);
                 }
                 expect(stdout).toContain(process.cwd());
-                expect(stdout).toContain('@scope' + path.sep + 'b');
+                expect(stdout).toContain('@scope' + path.sep + 'bar-pkg');
                 done();
             }
         );
