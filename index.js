@@ -54,13 +54,14 @@ requireIt.directory = module => {
     if (!pathToModule) {
         throw Error(`Cannot find module: '${module}'`);
     }
-    return path.join(
-        pathToModule.split(module.replace('/', path.sep))
-            .filter(p => !/^[/\\]$/.test(p))
-            .slice(0, -1)
-            .join(module),
-        module
-    );
+    module = module.replace('/', path.sep);
+    const pathPieces = pathToModule.split(module)
+        .filter(p => !/^[/\\]$/.test(p))
+        .filter(p => !/\.[^\.]+$/.test(p));
+    if (pathPieces.length > 1) {
+        return pathPieces.join(module);
+    }
+    return path.join(pathPieces[0], module);
 };
 
 module.exports = requireIt;
