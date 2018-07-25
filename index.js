@@ -57,7 +57,7 @@ requireIt.directory = module => {
     module = module.replace('/', path.sep);
     const pathPieces = pathToModule.split(module)
         .filter(p => !/^[/\\]$/.test(p))
-        .filter(p => !/\.[^\.]+$/.test(p));
+        .filter(p => !/\.[^\.\\/]+$/.test(p));
     if (pathPieces.length > 1) {
         return pathPieces.join(module);
     }

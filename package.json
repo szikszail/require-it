@@ -1,6 +1,6 @@
 {
   "name": "require-it",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "This module extends the default nodejs require with capabilities to require nested modules, independent on where they are nested.",
   "main": "index.js",
   "scripts": {

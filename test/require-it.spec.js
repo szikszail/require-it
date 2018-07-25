@@ -111,6 +111,25 @@ describe("require-it", function () {
         );
     });
 
+    it("should handle special paths", function (done) {
+        child_process.execFile(
+            'node',
+            [path.join(process.cwd(), 'test/test-module/require-dotted.js')],
+            {cwd: path.join(process.cwd(), 'test/test-module')},
+            function (error, stdout, stderr) {
+                if (error) {
+                    return done(error);
+                }
+                if (stderr) {
+                    return done(stderr);
+                }
+                expect(stdout).toContain(process.cwd());
+                expect(stdout).toContain('zen-pkg');
+                done();
+            }
+        );
+    });
+
     it('should work in that case when main file is the same as package name', () => {
         sinon.stub(requireIt, 'resolve').returns('<path-to-module>/node_modules/normalize.css/normalize.css');
         expect(requireIt.directory('normalize.css').replace(/\\/g, '/')).toEqual('<path-to-module>/node_modules/normalize.css');
