@@ -4,8 +4,6 @@
 
 This module extends the default nodejs require with capabilities to require nested modules, independent on where they are nested.
 
-**This module is for npm < 3.0, because new npm versions flatten the dependency tree and the problem is solved :)**
-
 ## Install
 
     npm install require-it --save
@@ -52,10 +50,10 @@ Returns the local path wich could be required by `require` without the main JS f
 
 Requires the given global module.
 
-### `requireIt.global.resolve(moduleName)`
+### `requireIt.global.resolve(globalModuleName)`
 
 Returns the global path which could be required by `require`.
 
-### `requireIt.global.directory(moduleName)`
+### `requireIt.global.directory(globalModuleName)`
 
 Returns the global path wich could be required by `require` without the main JS file, ie. the path to the module's directory.
