@@ -30,8 +30,5 @@
     "jasmine-node": "^1.14.5",
     "proxyquire": "^2.1.0",
     "sinon": "^6.0.0"
-  },
-  "dependencies": {
-    "global-modules": "^1.0.0"
   }
 }
