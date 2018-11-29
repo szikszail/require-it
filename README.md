@@ -38,12 +38,24 @@ var nestedModule = requireIt('nested-module');
 
 ### `requireIt(moduleName)`
 
-Requires the given module, indenpendent on which level is it.
+Requires the given local module, indenpendent on which level is it.
 
 ### `requireIt.resolve(moduleName)`
 
-Returns the path which could be required by `require`.
+Returns the local path which could be required by `require`.
 
 ### `requireIt.directory(moduleName)`
 
-Returns the path wich could be required by `require` without the main JS file, ie. the path to the module's directory.
+Returns the local path wich could be required by `require` without the main JS file, ie. the path to the module's directory.
+
+### `requireIt.global(globalModuleName)`
+
+Requires the given global module.
+
+### `requireIt.global.resolve(moduleName)`
+
+Returns the global path which could be required by `require`.
+
+### `requireIt.global.directory(moduleName)`
+
+Returns the global path wich could be required by `require` without the main JS file, ie. the path to the module's directory.

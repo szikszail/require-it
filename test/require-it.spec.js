@@ -7,11 +7,6 @@ var requireIt = require('../index');
 describe("require-it", function () {
     var requireIt;
     
-    copyDir.sync(
-        path.join(process.cwd(), 'test/test-module/node_modules/foo-pkg'),
-        path.join(process.cwd(), 'node_modules/foo-pkg')
-    );
-
     beforeEach(function () {
         requireIt = require('../index');
     });
@@ -42,6 +37,24 @@ describe("require-it", function () {
         );
     });
 
+    it("should require global dependencies", function (done) {
+        child_process.execFile(
+            'node',
+            [path.join(process.cwd(), 'test/test-module/require-dependency.global.js')],
+            {cwd: path.join(process.cwd(), 'test/test-module')},
+            function (error, stdout, stderr) {
+                if (error) {
+                    return done(error);
+                }
+                if (stderr) {
+                    return done(stderr);
+                }
+                expect(stdout).toContain('foo-pkg-global');
+                done();
+            }
+        );
+    });
+
     it("should require nested dependencies", function (done) {
         child_process.execFile(
             'node',
@@ -65,7 +78,7 @@ describe("require-it", function () {
         child_process.execFile(
             'node',
             [path.join(process.cwd(), 'test/test-module/require-directory.js')],
-            {cwd: path.join(process.cwd(), 'test/test-module')},
+            {cwd: path.join(process.cwd(), 'test', 'test-module')},
             function (error, stdout, stderr) {
                 if (error) {
                     return done(error);
@@ -73,8 +86,43 @@ describe("require-it", function () {
                 if (stderr) {
                     return done(stderr);
                 }
-                expect(stdout).toContain(process.cwd());
-                expect(stdout).toMatch(/foo-pkg$/m);
+                expect(stdout).toContain(path.join(process.cwd(), 'test', 'test-module', 'node_modules', 'foo-pkg'));
+                done();
+            }
+        );
+    });
+
+    it("should work in that case when main file is the same as package name", function (done) {
+        child_process.execFile(
+            'node',
+            [path.join(process.cwd(), 'test/test-module/require-directory.samemain.js')],
+            {cwd: path.join(process.cwd(), 'test', 'test-module')},
+            function (error, stdout, stderr) {
+                if (error) {
+                    return done(error);
+                }
+                if (stderr) {
+                    return done(stderr);
+                }
+                expect(stdout).toContain(path.join(process.cwd(), 'test', 'test-module', 'node_modules', 'normalize.css'));
+                done();
+            }
+        );
+    });
+
+    it("should determine global module directory", function (done) {
+        child_process.execFile(
+            'node',
+            [path.join(process.cwd(), 'test/test-module/require-directory.global.js')],
+            {cwd: path.join(process.cwd(), 'test', 'test-module')},
+            function (error, stdout, stderr) {
+                if (error) {
+                    return done(error);
+                }
+                if (stderr) {
+                    return done(stderr);
+                }
+                expect(stdout).toContain(path.join(process.cwd(), 'test', 'global', 'node_modules', 'foo-pkg'));
                 done();
             }
         );
@@ -104,8 +152,25 @@ describe("require-it", function () {
                 if (stderr) {
                     return done(stderr);
                 }
-                expect(stdout).toContain(process.cwd());
-                expect(stdout).toContain('@scope' + path.sep + 'bar-pkg');
+                expect(stdout).toContain(path.join(process.cwd(), 'test', 'test-module', 'node_modules', '@scope', 'bar-pkg'));
+                done();
+            }
+        );
+    });
+
+    it("should work with global scoped packages too", function (done) {
+        child_process.execFile(
+            'node',
+            [path.join(process.cwd(), 'test/test-module/require-scoped.global.js')],
+            {cwd: path.join(process.cwd(), 'test/test-module')},
+            function (error, stdout, stderr) {
+                if (error) {
+                    return done(error);
+                }
+                if (stderr) {
+                    return done(stderr);
+                }
+                expect(stdout).toContain(path.join(process.cwd(), 'test', 'global', 'node_modules', '@scope', 'bar-pkg'));
                 done();
             }
         );
@@ -128,10 +193,5 @@ describe("require-it", function () {
                 done();
             }
         );
-    });
-
-    it('should work in that case when main file is the same as package name', () => {
-        sinon.stub(requireIt, 'resolve').returns('<path-to-module>/node_modules/normalize.css/normalize.css');
-        expect(requireIt.directory('normalize.css').replace(/\\/g, '/')).toEqual('<path-to-module>/node_modules/normalize.css');
     });
 });

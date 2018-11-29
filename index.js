@@ -2,23 +2,28 @@
 
 const path = require('path');
 const fs = require('fs');
-
 const utils = require('./utils');
+const {execSync} = require('child_process');
 
-const requireIt = function (module) {
-    return require(requireIt.resolve(module));
-};
-
-requireIt.resolve = module => {
+const _resolve = (isGlobal, module) => {
     let pathToModule;
+    let packageRoot = process.cwd();
+    if (isGlobal) {
+        packageRoot = execSync('npm root -g', {encoding: 'utf8'}).trim().replace(/node_modules$/, '');
+    }
 
     const checkScopedNodeModulesOfFolder = (folder, module) => {
         const directModules = utils.getNodeModulesOfFolder(folder);
+        let found = false;
         for (let i = 0; i < directModules.length; ++i) {
             if (utils.getFolder(directModules[i]) === module) {
                 pathToModule = path.join(folder, directModules[i]);
+                found = true;
                 break;
             }
+        }
+        if (!found) {
+            throw Error(`Cannot find module: '${module}'`);
         }
     }
     const checkNodeModulesOfFolder = (folder, module) => {
@@ -35,22 +40,30 @@ requireIt.resolve = module => {
         }
     }
 
-    try {
-        pathToModule = require.resolve(module);
-    } catch (e) {
+    const determineFolder = module => {
         let names = module.match(/^(@[^/]+)\/(.+)$/);
         if (names) {
-            checkNodeModulesOfFolder(process.cwd(), names[1]);
+            checkNodeModulesOfFolder(packageRoot, names[1]);
             checkScopedNodeModulesOfFolder(pathToModule, names[2]);
         } else {
-            checkNodeModulesOfFolder(process.cwd(), module);
+            checkNodeModulesOfFolder(packageRoot, module);
+        }
+    }
+
+    if (isGlobal) {
+        determineFolder(module);
+    } else {
+        try {
+            pathToModule = require.resolve(module);
+        } catch (e) {
+            determineFolder(module);
         }
     }
     return pathToModule;
-};
+}
 
-requireIt.directory = module => {
-    let pathToModule = requireIt.resolve(module);
+const _directory = (isGlobal, module) => {
+    let pathToModule = _resolve(isGlobal, module);
     if (!pathToModule) {
         throw Error(`Cannot find module: '${module}'`);
     }
@@ -62,6 +75,16 @@ requireIt.directory = module => {
         return pathPieces.join(module);
     }
     return path.join(pathPieces[0], module);
-};
+}
+
+const requireIt = module => require(requireIt.resolve(module));
+requireIt.resolve = _resolve.bind(null, false);
+requireIt.directory = _directory.bind(null, false);
+
+const globalRequireIt = module => require(globalRequireIt.resolve(module));
+globalRequireIt.resolve = _resolve.bind(null, true);
+globalRequireIt.directory = _directory.bind(null, true);
+
+requireIt.global = globalRequireIt;
 
 module.exports = requireIt;
