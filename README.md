@@ -27,9 +27,9 @@ This module extends the default nodejs require with capabilities to require nest
 `myPackage/index.js`:
 
 ```javascript
-var requireIt = require('require-it');
+const { requireIt } = require('require-it');
 // it will work and won't throw error
-var nestedModule = requireIt('nested-module');
+const nestedModule = requireIt('nested-module');
 ```
 
 ## API
@@ -38,22 +38,34 @@ var nestedModule = requireIt('nested-module');
 
 Requires the given local module, indenpendent on which level is it.
 
-### `requireIt.resolve(moduleName)`
+#### `requireIt.resolve(moduleName)`
 
 Returns the local path which could be required by `require`.
 
-### `requireIt.directory(moduleName)`
+#### `requireIt.directory(moduleName)`
 
 Returns the local path wich could be required by `require` without the main JS file, ie. the path to the module's directory.
 
-### `requireIt.global(globalModuleName)`
+### `requireGlobal(globalModuleName)`
 
 Requires the given global module.
 
-### `requireIt.global.resolve(globalModuleName)`
+#### `requireGlobal.resolve(globalModuleName)`
 
 Returns the global path which could be required by `require`.
 
-### `requireIt.global.directory(globalModuleName)`
+#### `requireGlobal.directory(globalModuleName)`
 
 Returns the global path wich could be required by `require` without the main JS file, ie. the path to the module's directory.
+
+### `requireFrom(moduleName, root)`
+
+Requires the given module, found in the given root directory.
+
+#### `requireFrom.resolve(moduleName, root)`
+
+Returns the module's path which could be required by `require`, found in the given root directory.
+
+#### `requireFrom.directory(moduleName, root)`
+
+Returns the module's path wich could be required by `require` without the main JS file, ie. the path to the module's directory, found in the given root directory.
