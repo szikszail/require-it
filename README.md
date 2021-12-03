@@ -1,6 +1,8 @@
 # require-it
 
-[![Build Status](https://travis-ci.org/szikszail/require-it.svg?branch=master)](https://travis-ci.org/szikszail/require-it) [![dependency Status](https://david-dm.org/szikszail/require-it.svg)](https://david-dm.org/szikszail/require-it) [![devDependency Status](https://david-dm.org/szikszail/require-it/dev-status.svg)](https://david-dm.org/szikszail/require-it#info=devDependencies)
+![Downloads](https://img.shields.io/npm/dw/require-it?style=flat-square)
+![Version@npm](https://img.shields.io/npm/v/require-it?label=version%40npm&style=flat-square)
+![Version@git](https://img.shields.io/github/package-json/v/szikszail/require-it/master?label=version%40git&style=flat-square)
 
 This module extends the default nodejs require with capabilities to require nested modules, independent on where they are nested.
 
