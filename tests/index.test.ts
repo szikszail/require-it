@@ -158,7 +158,15 @@ describe("require-it", () => {
 
     describe("requireGlobal", () => {
         test("should require global module", () => {
-            expect(requireGlobal("npm")).toBeDefined();
+            try {
+                expect(requireGlobal("npm")).toBeDefined();
+            } catch (e) {
+                // Requiring global NPM is not possible since v8.0.0
+                // But this still means requireGlobal works, as it required the global NPM
+                if (!e.toString().includes("The programmatic API was removed in npm v8.0.0")) {
+                    throw e;
+                }
+            }
         });
 
         test("should resolve global module", () => {
