@@ -7,7 +7,7 @@
   "scripts": {
     "tsc:watch": "tsc -w",
     "build": "npm run clean && npm run compile && npm run copyToDist && npm test -- --coverage && npm run typedoc",
-    "buildUpdate": "npm run compile && npm run copyToDist && npm run postbuild",
+    "buildUpdate": "npm run compile && npm run copyToDist",
     "copyToDist": "copyfiles -f *.txt *.md package.json dist",
     "typedoc": "typedoc --exclude **/bin/**/*.ts --exclude **/cli.ts --out ./dist/docs/api ./src",
     "clean": "rimraf ./dist",
