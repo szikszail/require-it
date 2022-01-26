@@ -18,7 +18,7 @@ export const isFolder = (folder: string): boolean => {
 };
 
 export const isScopedModule = (name: string): boolean => {
-    return isFolder(name) && /@[^/\\]*$/.test(name);
+    return isFolder(name) && /@[^/\\@]+$/.test(name);
 };
 
 export const isNodeModule = (name: string): boolean => {
