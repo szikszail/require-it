@@ -162,7 +162,7 @@ describe("require-it", () => {
         });
 
         test("should resolve global module", () => {
-            expect(requireGlobal.resolve("npm")).toMatch(/npm\.js$/);
+            expect(requireGlobal.resolve("npm")).toMatch(/npm.*\.js$/);
         });
 
         test("should resolve directory of global module", () => {
