@@ -4,7 +4,7 @@
 ![Version@npm](https://img.shields.io/npm/v/require-it?label=version%40npm&style=flat-square)
 ![Version@git](https://img.shields.io/github/package-json/v/szikszail/require-it/master?label=version%40git&style=flat-square)
 
-This module extends the default nodejs require with capabilities to require nested modules, independent on where they are nested.
+This module extends the default Node.js require with capabilities to require nested modules, independent of where they are nested.
 
 ## Install
 
@@ -38,15 +38,15 @@ const nestedModule = requireIt('nested-module');
 
 ### `requireIt(moduleName)`
 
-Requires the given local module, indenpendent on which level is it.
+Requires the given local module, independent of which level it is.
 
 #### `requireIt.resolve(moduleName)`
 
-Returns the local path which could be required by `require`.
+Returns the local path, which could be required by `require`.
 
 #### `requireIt.directory(moduleName)`
 
-Returns the local path wich could be required by `require` without the main JS file, ie. the path to the module's directory.
+Returns the local path, which could be required by `require` without the main JS file, i.e., the path to the module's directory.
 
 ### `requireGlobal(globalModuleName)`
 
@@ -54,20 +54,20 @@ Requires the given global module.
 
 #### `requireGlobal.resolve(globalModuleName)`
 
-Returns the global path which could be required by `require`.
+Returns the global path, which could be required by `require`.
 
 #### `requireGlobal.directory(globalModuleName)`
 
-Returns the global path wich could be required by `require` without the main JS file, ie. the path to the module's directory.
+Returns the global path, which could be required by `require` without the main JS file, i.e., the path to the module's directory.
 
 ### `requireFrom(moduleName, root)`
 
-Requires the given module, found in the given root directory.
+Requires the given module found in the given root directory.
 
 #### `requireFrom.resolve(moduleName, root)`
 
-Returns the module's path which could be required by `require`, found in the given root directory.
+Returns the module's path, which could be required by `require`, found in the given root directory.
 
 #### `requireFrom.directory(moduleName, root)`
 
-Returns the module's path wich could be required by `require` without the main JS file, ie. the path to the module's directory, found in the given root directory.
+Returns the module's path, which could be required by `require` without the main JS file, i.e., the path to the module's directory, found in the given root directory.
