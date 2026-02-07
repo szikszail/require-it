@@ -4,9 +4,9 @@ on:
     branches:
       - master
       - main
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'hotfix/**'
+      - "feature/**"
+      - "bugfix/**"
+      - "hotfix/**"
   workflow_dispatch:
 jobs:
   call_npm_package_build:
