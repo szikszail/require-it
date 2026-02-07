@@ -4,8 +4,7 @@ import { requireFrom, requireGlobal, requireIt } from "../src";
 
 const MODULES = join(__dirname, "test-module");
 
-const installOutput = execSync("npm i -g require-it");
-console.log("Installing require-it:", installOutput.toString());
+execSync("npm i -g require-it");
 
 describe("require-it", () => {
   test("should throw error if no package found when requiring", () => {
@@ -90,6 +89,10 @@ describe("require-it", () => {
       expect(requireIt.directory("normalize.css")).toEqual(
         join(MODULES, "node_modules", "normalize.css"),
       );
+    });
+
+    test("should not resolve if package does not have main", () => {
+      expect(requireIt.resolve("without-main")).toBeUndefined();
     });
 
     test("should resolve scoped package", () => {
