@@ -184,8 +184,9 @@ describe("require-it", () => {
       const globalStuff = JSON.parse(
         execSync("npm list -g --depth=0 --json").toString().trim(),
       );
-      console.log({ globalStuff });
-      globalModule = Object.keys(globalStuff.dependencies)[0];
+      const globalModules = Object.keys(globalStuff.dependencies);
+      console.log({ globalStuff, globalModules });
+      globalModule = globalModules[0];
       if (!globalModule) {
         console.error("No global NPM modules found!");
       }
