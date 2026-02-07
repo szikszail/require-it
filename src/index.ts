@@ -63,9 +63,10 @@ const resolveMainFile = (name: string, root: string): string => {
   } else {
     pathToFolder = checkNodeModulesOfFolder(root, name);
   }
-  if (pathToFolder) {
-    return join(pathToFolder, readPackageJSON(pathToFolder).main);
-  }
+  if (!pathToFolder) return;
+  const packageJSON = readPackageJSON(pathToFolder);
+  if (!packageJSON.main) return;
+  return join(pathToFolder, packageJSON.main);
 };
 
 const resolve: ResolveFromFunction = (name: string, root?: string): string => {
