@@ -1,5 +1,5 @@
-import { execSync } from "child_process";
-import { join, sep } from "path";
+import { execSync } from "node:child_process";
+import { join, sep } from "node:path";
 import { getFolder, getNodeModulesOfFolder, readPackageJSON } from "./utils";
 
 export type ResolveFunction = (name: string) => string;
@@ -43,7 +43,6 @@ const checkScopedNodeModulesOfFolder = (
 const checkNodeModulesOfFolder = (folder: string, name: string): string => {
   const root: string = join(folder, "node_modules");
   const nodeModules: string[] = getNodeModulesOfFolder(root);
-  console.log({ root, nodeModules });
   for (const nodeModule of nodeModules) {
     if (getFolder(nodeModule) === name) {
       return join(root, nodeModule);
@@ -58,7 +57,6 @@ const checkNodeModulesOfFolder = (folder: string, name: string): string => {
 
 const resolveMainFile = (name: string, root: string): string => {
   const names = name.match(/^(@[^/]+)\/(.+)$/);
-  console.log("Names:", names);
   let pathToFolder: string;
   if (names) {
     const pathToModule = checkNodeModulesOfFolder(root, names[1]);
@@ -66,21 +64,20 @@ const resolveMainFile = (name: string, root: string): string => {
   } else {
     pathToFolder = checkNodeModulesOfFolder(root, name);
   }
-  console.log("pathToFolder:", pathToFolder);
   if (pathToFolder) {
     return join(pathToFolder, readPackageJSON(pathToFolder).main);
   }
 };
 
 const resolve: ResolveFromFunction = (name: string, root?: string): string => {
-  if (!root) {
-    try {
-      return require.resolve(name);
-    } catch (e) {
-      return resolveMainFile(name, process.cwd());
-    }
+  if (root) {
+    return resolveMainFile(name, root);
   }
-  return resolveMainFile(name, root);
+  try {
+    return require.resolve(name);
+  } catch {
+    return resolveMainFile(name, process.cwd());
+  }
 };
 
 const directory: ResolveFromFunction = (
