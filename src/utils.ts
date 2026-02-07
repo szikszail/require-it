@@ -44,8 +44,5 @@ export interface PackageJSON {
 }
 
 export const getFolder = (path: string): string => path.split(/[\/\\]/).pop();
-export const readPackageJSON = (folder: string): PackageJSON => {
-  const content = require(join(folder, "package.json"));
-  console.log({ folder, content });
-  return content;
-};
+export const readPackageJSON = (folder: string): PackageJSON =>
+  require(join(folder, "package.json"));

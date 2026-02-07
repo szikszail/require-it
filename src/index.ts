@@ -22,7 +22,6 @@ const getGlobalRoot = (): string => {
       .trim()
       .replace(/node_modules$/, "");
   }
-  console.log("Global root:", globalRoot);
   return globalRoot;
 };
 

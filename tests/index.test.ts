@@ -8,8 +8,11 @@ const globalStuff = JSON.parse(
   execSync("npm list -g --depth=0 --json").toString().trim(),
 );
 const globalModules = Object.keys(globalStuff.dependencies);
-console.log({ globalStuff, globalModules });
-const GLOBAL_MODULE = globalModules[0];
+const GLOBAL_MODULE = globalModules.includes("npm")
+  ? "npm"
+  : globalModules.includes("yarn")
+    ? "yarn"
+    : globalModules[0];
 if (!GLOBAL_MODULE) {
   console.error("No global NPM modules found!");
 }
@@ -189,7 +192,19 @@ describe("require-it", () => {
 
   describe("requireGlobal", () => {
     (GLOBAL_MODULE ? test : test.skip)("should require global module", () => {
-      expect(requireGlobal(GLOBAL_MODULE)).toBeDefined();
+      try {
+        expect(requireGlobal(GLOBAL_MODULE)).toBeDefined();
+      } catch (e) {
+        // Requiring global NPM is not possible since v8.0.0
+        // But this still means requireGlobal works, as it required the global NPM
+        if (
+          !e
+            .toString()
+            .includes("The programmatic API was removed in npm v8.0.0")
+        ) {
+          throw e;
+        }
+      }
     });
 
     (GLOBAL_MODULE ? test : test.skip)("should resolve global module", () => {
