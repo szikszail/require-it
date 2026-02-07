@@ -4,11 +4,14 @@ on:
     branches:
       - master
       - main
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'hotfix/**'
+      - "feature/**"
+      - "bugfix/**"
+      - "hotfix/**"
   workflow_dispatch:
 jobs:
+  debug:
+    steps:
+      - run: which npm
   call_npm_package_build:
     uses: szikszail/workflows/.github/workflows/npm-package-build.yml@v1
     with:
