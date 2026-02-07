@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - 'beta/**'
+permissions:
+  contents: read
 jobs:
   call_npm_beta_release:
     uses: szikszail/workflows/.github/workflows/npm-beta-release.yml@v1
