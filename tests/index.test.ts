@@ -185,19 +185,24 @@ describe("require-it", () => {
         JSON.parse(execSync("npm list -g --depth=0 --json").toString().trim())
           .dependencies,
       )[0];
+      if (!globalModule) {
+        console.error("No global NPM modules found!");
+      }
     });
 
     test("should require global module", () => {
-      globalModule && expect(requireGlobal(globalModule)).toBeDefined();
+      if (!globalModule) return;
+      expect(requireGlobal(globalModule)).toBeDefined();
     });
 
     test("should resolve global module", () => {
-      globalModule && expect(requireGlobal.resolve(globalModule)).toBeDefined();
+      if (!globalModule) return;
+      expect(requireGlobal.resolve(globalModule)).toBeDefined();
     });
 
     test("should resolve directory of global module", () => {
-      globalModule &&
-        expect(requireGlobal.directory(globalModule)).toBeDefined();
+      if (!globalModule) return;
+      expect(requireGlobal.directory(globalModule)).toBeDefined();
     });
   });
 });
