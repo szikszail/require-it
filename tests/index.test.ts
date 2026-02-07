@@ -4,19 +4,7 @@ import { requireFrom, requireGlobal, requireIt } from "../src";
 
 const MODULES = join(__dirname, "test-module");
 
-const globalStuff = JSON.parse(
-  execSync("npm list -g --depth=0 --json").toString().trim(),
-);
-const globalModules = Object.keys(globalStuff.dependencies);
-console.log({ globalModules, globalStuff });
-const GLOBAL_MODULE = globalModules.includes("npm")
-  ? "npm"
-  : globalModules.includes("yarn")
-    ? "yarn"
-    : globalModules[0];
-if (!GLOBAL_MODULE) {
-  console.error("No global NPM modules found!");
-}
+execSync("npm i -g require-it");
 
 describe("require-it", () => {
   test("should throw error if no package found when requiring", () => {
@@ -192,31 +180,16 @@ describe("require-it", () => {
   });
 
   describe("requireGlobal", () => {
-    (GLOBAL_MODULE ? test : test.skip)("should require global module", () => {
-      try {
-        expect(requireGlobal(GLOBAL_MODULE)).toBeDefined();
-      } catch (e) {
-        // Requiring global NPM is not possible since v8.0.0
-        // But this still means requireGlobal works, as it required the global NPM
-        if (
-          !e
-            .toString()
-            .includes("The programmatic API was removed in npm v8.0.0")
-        ) {
-          throw e;
-        }
-      }
+    test("should require global module", () => {
+      expect(requireGlobal("require-it")).toBeDefined();
     });
 
-    (GLOBAL_MODULE ? test : test.skip)("should resolve global module", () => {
-      expect(requireGlobal.resolve(GLOBAL_MODULE)).toBeDefined();
+    test("should resolve global module", () => {
+      expect(requireGlobal.resolve("require-it")).toBeDefined();
     });
 
-    (GLOBAL_MODULE ? test : test.skip)(
-      "should resolve directory of global module",
-      () => {
-        expect(requireGlobal.directory(GLOBAL_MODULE)).toBeDefined();
-      },
-    );
+    test("should resolve directory of global module", () => {
+      expect(requireGlobal.directory("require-it")).toBeDefined();
+    });
   });
 });
