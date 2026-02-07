@@ -4,6 +4,16 @@ import { requireFrom, requireGlobal, requireIt } from "../src";
 
 const MODULES = join(__dirname, "test-module");
 
+const globalStuff = JSON.parse(
+  execSync("npm list -g --depth=0 --json").toString().trim(),
+);
+const globalModules = Object.keys(globalStuff.dependencies);
+console.log({ globalStuff, globalModules });
+const GLOBAL_MODULE = globalModules[0];
+if (!GLOBAL_MODULE) {
+  console.error("No global NPM modules found!");
+}
+
 describe("require-it", () => {
   test("should throw error if no package found when requiring", () => {
     expect(() => requireFrom("@scope/no-package", MODULES)).toThrow(
@@ -178,33 +188,19 @@ describe("require-it", () => {
   });
 
   describe("requireGlobal", () => {
-    let globalModule: string;
-
-    beforeAll(() => {
-      const globalStuff = JSON.parse(
-        execSync("npm list -g --depth=0 --json").toString().trim(),
-      );
-      const globalModules = Object.keys(globalStuff.dependencies);
-      console.log({ globalStuff, globalModules });
-      globalModule = globalModules[0];
-      if (!globalModule) {
-        console.error("No global NPM modules found!");
-      }
+    (GLOBAL_MODULE ? test : test.skip)("should require global module", () => {
+      expect(requireGlobal(GLOBAL_MODULE)).toBeDefined();
     });
 
-    test("should require global module", () => {
-      if (!globalModule) return;
-      expect(requireGlobal(globalModule)).toBeDefined();
+    (GLOBAL_MODULE ? test : test.skip)("should resolve global module", () => {
+      expect(requireGlobal.resolve(GLOBAL_MODULE)).toBeDefined();
     });
 
-    test("should resolve global module", () => {
-      if (!globalModule) return;
-      expect(requireGlobal.resolve(globalModule)).toBeDefined();
-    });
-
-    test("should resolve directory of global module", () => {
-      if (!globalModule) return;
-      expect(requireGlobal.directory(globalModule)).toBeDefined();
-    });
+    (GLOBAL_MODULE ? test : test.skip)(
+      "should resolve directory of global module",
+      () => {
+        expect(requireGlobal.directory(GLOBAL_MODULE)).toBeDefined();
+      },
+    );
   });
 });
