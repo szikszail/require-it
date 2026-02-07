@@ -8,7 +8,7 @@ const globalStuff = JSON.parse(
   execSync("npm list -g --depth=0 --json").toString().trim(),
 );
 const globalModules = Object.keys(globalStuff.dependencies);
-console.log({ globalModules });
+console.log({ globalModules, globalStuff });
 const GLOBAL_MODULE = globalModules.includes("npm")
   ? "npm"
   : globalModules.includes("yarn")
