@@ -43,6 +43,7 @@ const checkScopedNodeModulesOfFolder = (
 const checkNodeModulesOfFolder = (folder: string, name: string): string => {
   const root: string = join(folder, "node_modules");
   const nodeModules: string[] = getNodeModulesOfFolder(root);
+  console.log({ root, nodeModules });
   for (const nodeModule of nodeModules) {
     if (getFolder(nodeModule) === name) {
       return join(root, nodeModule);
