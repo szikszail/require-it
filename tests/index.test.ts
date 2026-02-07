@@ -4,7 +4,8 @@ import { requireFrom, requireGlobal, requireIt } from "../src";
 
 const MODULES = join(__dirname, "test-module");
 
-execSync("npm i -g require-it");
+const installOutput = execSync("npm i -g require-it");
+console.log("Installing require-it:", installOutput.toString());
 
 describe("require-it", () => {
   test("should throw error if no package found when requiring", () => {
