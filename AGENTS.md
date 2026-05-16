@@ -30,7 +30,7 @@ npm run compile
 npm run build
 ```
 
-- `npm run compile` runs `tsc` and then TSLint.
+- `npm run compile` runs `tsc` and then ESLint.
 - `npm test` runs Jest and writes reports under `dist/reports`.
 - `npm run build` cleans `dist`, compiles, copies package files, runs tests with coverage, and generates TypeDoc output.
 
@@ -38,7 +38,7 @@ When changing behavior, prefer the smallest verification that proves the edit, t
 
 ## Important project conventions
 
-- Keep the library CommonJS-compatible. `tsconfig.json` targets `commonjs`, and `package.json` exposes generated root-level JS and declaration files from `dist`.
+- Keep the library CommonJS-compatible. `tsconfig.json` uses Node16 module settings, and `package.json` exposes generated root-level JS and declaration files from `dist`.
 - Preserve the current public surface unless the task explicitly calls for an API change:
   - `requireIt`
   - `requireGlobal`
