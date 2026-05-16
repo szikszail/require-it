@@ -2,17 +2,22 @@ import { execSync } from "node:child_process";
 import { join, sep } from "node:path";
 import { getFolder, getNodeModulesOfFolder, readPackageJSON } from "./utils";
 
-export type ResolveFunction = (name: string) => string;
-export type ResolveFromFunction = (name: string, root?: string) => string;
+export type ResolveFunction = (name: string) => string | undefined;
+export type ResolveFromFunction = (
+  name: string,
+  root?: string,
+) => string | undefined;
+export type DirectoryFunction = (name: string) => string;
+export type DirectoryFromFunction = (name: string, root?: string) => string;
 export type RequireFunction = (name: string) => object;
 export type RequireFromFunction = (name: string, root?: string) => object;
 export interface RequireObject extends RequireFunction {
   resolve: ResolveFunction;
-  directory: ResolveFunction;
+  directory: DirectoryFunction;
 }
 export interface RequireFromObject extends RequireFromFunction {
   resolve: ResolveFromFunction;
-  directory: ResolveFromFunction;
+  directory: DirectoryFromFunction;
 }
 
 let globalRoot: string;
@@ -30,7 +35,7 @@ const checkScopedNodeModulesOfFolder = (
   name: string,
 ): string => {
   const directModules: string[] = getNodeModulesOfFolder(folder);
-  const found: string = directModules.find((subfolder: string): boolean => {
+  const found = directModules.find((subfolder: string): boolean => {
     return getFolder(subfolder) === name;
   });
   if (!found) {
@@ -39,7 +44,10 @@ const checkScopedNodeModulesOfFolder = (
   return join(folder, found);
 };
 
-const checkNodeModulesOfFolder = (folder: string, name: string): string => {
+const checkNodeModulesOfFolder = (
+  folder: string,
+  name: string,
+): string | undefined => {
   const root: string = join(folder, "node_modules");
   const nodeModules: string[] = getNodeModulesOfFolder(root);
   for (const nodeModule of nodeModules) {
@@ -54,12 +62,15 @@ const checkNodeModulesOfFolder = (folder: string, name: string): string => {
   }
 };
 
-const resolveMainFile = (name: string, root: string): string => {
+const resolveMainFile = (name: string, root: string): string | undefined => {
   const names = name.match(/^(@[^/]+)\/(.+)$/);
-  let pathToFolder: string;
+  let pathToFolder: string | undefined;
   if (names) {
     const pathToModule = checkNodeModulesOfFolder(root, names[1]);
-    pathToFolder = checkScopedNodeModulesOfFolder(pathToModule, names[2]);
+    pathToFolder = checkScopedNodeModulesOfFolder(
+      pathToModule as string,
+      names[2],
+    );
   } else {
     pathToFolder = checkNodeModulesOfFolder(root, name);
   }
@@ -69,7 +80,10 @@ const resolveMainFile = (name: string, root: string): string => {
   return join(pathToFolder, packageJSON.main);
 };
 
-const resolve: ResolveFromFunction = (name: string, root?: string): string => {
+const resolve: ResolveFromFunction = (
+  name: string,
+  root?: string,
+): string | undefined => {
   if (root) {
     return resolveMainFile(name, root);
   }
@@ -80,7 +94,7 @@ const resolve: ResolveFromFunction = (name: string, root?: string): string => {
   }
 };
 
-const directory: ResolveFromFunction = (
+const directory: DirectoryFromFunction = (
   name: string,
   root?: string,
 ): string => {
@@ -92,7 +106,7 @@ const directory: ResolveFromFunction = (
   const pathPieces = pathToModule
     .split(name + sep)
     .filter((p: string): boolean => !/^[/\\]$/.test(p))
-    .filter((p: string): boolean => !/\.[^\.\\/]+$/.test(p));
+    .filter((p: string): boolean => !/\.[^.\\/]+$/.test(p));
   if (pathPieces.length > 1) {
     return pathPieces.join(name);
   }
@@ -100,15 +114,15 @@ const directory: ResolveFromFunction = (
 };
 
 export const requireIt: RequireObject = ((name: string): object => {
-  return require(requireIt.resolve(name));
+  return require(requireIt.resolve(name) as string);
 }) as RequireObject;
-requireIt.resolve = (name: string): string => resolve(name);
+requireIt.resolve = (name: string): string | undefined => resolve(name);
 requireIt.directory = (name: string): string => directory(name);
 
 export const requireGlobal: RequireObject = ((name: string): object => {
-  return require(requireGlobal.resolve(name));
+  return require(requireGlobal.resolve(name) as string);
 }) as RequireObject;
-requireGlobal.resolve = (name: string): string =>
+requireGlobal.resolve = (name: string): string | undefined =>
   resolve(name, getGlobalRoot());
 requireGlobal.directory = (name: string): string =>
   directory(name, getGlobalRoot());
@@ -117,7 +131,7 @@ export const requireFrom: RequireFromObject = ((
   module: string,
   root?: string,
 ): object => {
-  return require(resolve(module, root));
+  return require(resolve(module, root) as string);
 }) as RequireObject;
 requireFrom.resolve = resolve;
 requireFrom.directory = directory;
