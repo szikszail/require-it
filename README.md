@@ -6,6 +6,13 @@
 
 This module extends the default Node.js require with capabilities to require nested modules, independent of where they are nested.
 
+## Requirements
+
+Supported Node.js versions:
+
+- Node.js 22 LTS
+- Node.js 24 LTS
+
 ## Install
 
     npm install require-it --save
@@ -14,7 +21,7 @@ This module extends the default Node.js require with capabilities to require nes
 
     myPackage
      + node_modules
-     |  + direct-dependecy
+     |  + direct-dependency
      |  |  + node_modules
      |  |  |  \ nested-module
      |  |  |     + index.js

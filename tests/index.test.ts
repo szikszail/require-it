@@ -1,10 +1,15 @@
 import { join } from "node:path";
-import { execSync } from "node:child_process";
+
+jest.mock("node:child_process", () => ({
+  execSync: jest.fn(() => {
+    const { join: joinPath } = require("node:path");
+    return `${joinPath(__dirname, "test-module", "node_modules")}\n`;
+  }),
+}));
+
 import { requireFrom, requireGlobal, requireIt } from "../src";
 
 const MODULES = join(__dirname, "test-module");
-
-execSync("npm i -g require-it");
 
 describe("require-it", () => {
   test("should throw error if no package found when requiring", () => {
@@ -185,15 +190,21 @@ describe("require-it", () => {
 
   describe("requireGlobal", () => {
     test("should require global module", () => {
-      expect(requireGlobal("require-it")).toBeDefined();
+      expect(requireGlobal("foo-pkg")).toEqual({
+        name: "foo-pkg",
+      });
     });
 
     test("should resolve global module", () => {
-      expect(requireGlobal.resolve("require-it")).toBeDefined();
+      expect(requireGlobal.resolve("foo-pkg")).toEqual(
+        join(MODULES, "node_modules", "foo-pkg", "lib", "index.js"),
+      );
     });
 
     test("should resolve directory of global module", () => {
-      expect(requireGlobal.directory("require-it")).toBeDefined();
+      expect(requireGlobal.directory("foo-pkg")).toEqual(
+        join(MODULES, "node_modules", "foo-pkg"),
+      );
     });
   });
 });

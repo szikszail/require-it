@@ -40,9 +40,9 @@ export const getNodeModulesOfFolder = (folder: string): string[] => {
 };
 
 export interface PackageJSON {
-  main: string;
+  main?: string;
 }
 
-export const getFolder = (path: string): string => path.split(/[\/\\]/).pop();
+export const getFolder = (path: string): string => path.split(/[/\\]/).pop()!;
 export const readPackageJSON = (folder: string): PackageJSON =>
   require(join(folder, "package.json"));

@@ -4,9 +4,14 @@
         "es6",
         "es2015.promise"
       ],
-      "moduleResolution": "node",
+      "moduleResolution": "node16",
       "target": "es6",
-      "module": "commonjs",
+      "module": "node16",
+      "types": [
+        "node",
+        "jest"
+      ],
+      "isolatedModules": true,
       "noImplicitAny": true,
       "declaration": true,
       "importHelpers": true,
