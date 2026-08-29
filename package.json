@@ -7,11 +7,10 @@
   "scripts": {
     "tsc:watch": "tsc -w",
     "build": "npm run clean && npm run compile && npm run copyToDist && npm test -- --coverage && npm run typedoc",
-    "buildUpdate": "npm run compile && npm run copyToDist",
     "copyToDist": "copyfiles -f *.txt *.md package.json dist",
     "typedoc": "typedoc --exclude **/bin/**/*.ts --exclude **/cli.ts --out ./dist/docs/api ./src",
     "clean": "rimraf ./dist",
-    "test": "cross-env JEST_JUNIT_OUTPUT=./dist/reports/junit.xml jest",
+    "test": "jest",
     "lint": "eslint ./src/**/*.ts ./tests/**/*.ts",
     "compile": "tsc && npm run lint"
   },
@@ -45,7 +44,6 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "^25.8.0",
     "copyfiles": "^2.4.1",
-    "cross-env": "^10.1.0",
     "eslint": "^10.4.0",
     "jest": "^30.4.2",
     "jest-junit": "^17.0.0",
@@ -88,5 +86,9 @@
         "statements": 85
       }
     }
+  },
+  "jest-junit": {
+    "outputDirectory": "./dist/reports",
+    "outputName": "junit.xml"
   }
 }

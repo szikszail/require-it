@@ -10,6 +10,36 @@ jest.mock("node:child_process", () => ({
 import { requireFrom, requireGlobal, requireIt } from "../src";
 
 const MODULES = join(__dirname, "test-module");
+const RESOLVERS = [
+  {
+    name: "requireIt",
+    load: (name: string): object => requireIt(name),
+    resolve: (name: string): string | undefined => requireIt.resolve(name),
+    directory: (name: string): string => requireIt.directory(name),
+  },
+  {
+    name: "requireFrom",
+    load: (name: string): object => requireFrom(name, MODULES),
+    resolve: (name: string): string | undefined =>
+      requireFrom.resolve(name, MODULES),
+    directory: (name: string): string =>
+      requireFrom.directory(name, MODULES),
+  },
+];
+const RESOLVE_CASES: Array<[string, string]> = [
+  ["foo-pkg", "foo-pkg/lib/index.js"],
+  ["bar-pkg", "foo-pkg/node_modules/bar-pkg/index.js"],
+  ["dotted.package", "dotted.package/lib/index.js"],
+  ["normalize.css", "normalize.css/normalize.css"],
+  ["@scope/bar-pkg", "@scope/bar-pkg/index.js"],
+];
+const DIRECTORY_CASES: Array<[string, string]> = [
+  ["foo-pkg", "foo-pkg"],
+  ["bar-pkg", "foo-pkg/node_modules/bar-pkg"],
+  ["dotted.package", "dotted.package"],
+  ["normalize.css", "normalize.css"],
+  ["@scope/bar-pkg", "@scope/bar-pkg"],
+];
 
 describe("require-it", () => {
   test("should throw error if no package found when requiring", () => {
@@ -30,161 +60,27 @@ describe("require-it", () => {
     );
   });
 
-  describe("requireIt", () => {
+  describe.each(RESOLVERS)("$name", ({ load, resolve, directory }) => {
     beforeEach(() => {
       jest.spyOn(process, "cwd").mockReturnValue(MODULES);
     });
 
     test("should require direct dependecy", () => {
-      expect(requireIt("foo-pkg")).toEqual({
+      expect(load("foo-pkg")).toEqual({
         name: "foo-pkg",
       });
     });
 
-    test("should resolve direct dependency", () => {
-      expect(requireIt.resolve("foo-pkg")).toEqual(
-        join(MODULES, "node_modules", "foo-pkg", "lib", "index.js"),
-      );
-    });
-
-    test("should resolve directory of direct dependency", () => {
-      expect(requireIt.directory("foo-pkg")).toEqual(
-        join(MODULES, "node_modules", "foo-pkg"),
-      );
-    });
-
-    test("should resolve indirect dependency", () => {
-      expect(requireIt.resolve("bar-pkg")).toEqual(
-        join(
-          MODULES,
-          "node_modules",
-          "foo-pkg",
-          "node_modules",
-          "bar-pkg",
-          "index.js",
-        ),
-      );
-    });
-
-    test("should resolve directory of indirect dependency", () => {
-      expect(requireIt.directory("bar-pkg")).toEqual(
-        join(MODULES, "node_modules", "foo-pkg", "node_modules", "bar-pkg"),
-      );
-    });
-
-    test("should resolve package which has dotted name", () => {
-      expect(requireIt.resolve("dotted.package")).toEqual(
-        join(MODULES, "node_modules", "dotted.package", "lib", "index.js"),
-      );
-    });
-
-    test("should resolve directory of package which has dotted name", () => {
-      expect(requireIt.directory("dotted.package")).toEqual(
-        join(MODULES, "node_modules", "dotted.package"),
-      );
-    });
-
-    test("should resolve package which name is the same as main file", () => {
-      expect(requireIt.resolve("normalize.css")).toEqual(
-        join(MODULES, "node_modules", "normalize.css", "normalize.css"),
-      );
-    });
-
-    test("should resolve directory of package which name is the same as main file", () => {
-      expect(requireIt.directory("normalize.css")).toEqual(
-        join(MODULES, "node_modules", "normalize.css"),
-      );
+    test.each(RESOLVE_CASES)("should resolve %s", (name, relativePath) => {
+      expect(resolve(name)).toEqual(join(MODULES, "node_modules", relativePath));
     });
 
     test("should not resolve if package does not have main", () => {
-      expect(requireIt.resolve("without-main")).toBeUndefined();
+      expect(resolve("without-main")).toBeUndefined();
     });
 
-    test("should resolve scoped package", () => {
-      expect(requireIt.resolve("@scope/bar-pkg")).toEqual(
-        join(MODULES, "node_modules", "@scope", "bar-pkg", "index.js"),
-      );
-    });
-
-    test("should resolve directory of scoped package", () => {
-      expect(requireIt.directory("@scope/bar-pkg")).toEqual(
-        join(MODULES, "node_modules", "@scope", "bar-pkg"),
-      );
-    });
-  });
-
-  describe("requireFrom", () => {
-    test("should require direct dependecy", () => {
-      expect(requireFrom("foo-pkg", MODULES)).toEqual({
-        name: "foo-pkg",
-      });
-    });
-
-    test("should resolve direct dependency", () => {
-      expect(requireFrom.resolve("foo-pkg", MODULES)).toEqual(
-        join(MODULES, "node_modules", "foo-pkg", "lib", "index.js"),
-      );
-    });
-
-    test("should resolve directory of direct dependency", () => {
-      expect(requireFrom.directory("foo-pkg", MODULES)).toEqual(
-        join(MODULES, "node_modules", "foo-pkg"),
-      );
-    });
-
-    test("should resolve indirect dependency", () => {
-      expect(requireFrom.resolve("bar-pkg", MODULES)).toEqual(
-        join(
-          MODULES,
-          "node_modules",
-          "foo-pkg",
-          "node_modules",
-          "bar-pkg",
-          "index.js",
-        ),
-      );
-    });
-
-    test("should resolve directory of indirect dependency", () => {
-      expect(requireFrom.directory("bar-pkg", MODULES)).toEqual(
-        join(MODULES, "node_modules", "foo-pkg", "node_modules", "bar-pkg"),
-      );
-    });
-
-    test("should resolve package which has dotted name", () => {
-      expect(requireFrom.resolve("dotted.package", MODULES)).toEqual(
-        join(MODULES, "node_modules", "dotted.package", "lib", "index.js"),
-      );
-    });
-
-    test("should resolve directory of package which has dotted name", () => {
-      expect(requireFrom.directory("dotted.package", MODULES)).toEqual(
-        join(MODULES, "node_modules", "dotted.package"),
-      );
-    });
-
-    test("should resolve package which name is the same as main file", () => {
-      expect(requireFrom.resolve("normalize.css", MODULES)).toEqual(
-        join(MODULES, "node_modules", "normalize.css", "normalize.css"),
-      );
-    });
-
-    test("should resolve directory of package which name is the same as main file", () => {
-      expect(requireFrom.directory("normalize.css", MODULES)).toEqual(
-        join(MODULES, "node_modules", "normalize.css"),
-      );
-    });
-
-    test("should resolve scoped package", () => {
-      expect(requireFrom.resolve("@scope/bar-pkg", MODULES)).toEqual(
-        join(MODULES, "node_modules", "@scope", "bar-pkg", "index.js"),
-      );
-    });
-
-    test("should resolve directory of scoped package", () => {
-      expect(requireFrom.directory("@scope/bar-pkg", MODULES)).toEqual(
-        join(MODULES, "node_modules", "@scope", "bar-pkg"),
-      );
+    test.each(DIRECTORY_CASES)("should resolve directory of %s", (name, relativePath) => {
+      expect(directory(name)).toEqual(join(MODULES, "node_modules", relativePath));
     });
   });
 

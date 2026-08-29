@@ -1,8 +1,7 @@
 {
     "compilerOptions": {
       "lib": [
-        "es6",
-        "es2015.promise"
+        "es6"
       ],
       "moduleResolution": "node16",
       "target": "es6",

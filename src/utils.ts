@@ -1,5 +1,5 @@
 import { readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 
 export const isFile = (file: string): boolean => {
   try {
@@ -43,6 +43,6 @@ export interface PackageJSON {
   main?: string;
 }
 
-export const getFolder = (path: string): string => path.split(/[/\\]/).pop()!;
+export const getFolder = (path: string): string => basename(path.replace(/\\/g, "/"));
 export const readPackageJSON = (folder: string): PackageJSON =>
   require(join(folder, "package.json"));
